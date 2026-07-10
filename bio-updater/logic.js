@@ -63,12 +63,14 @@ function formatRow(state) {
   return state.entries.map(e => (e.count > 1 ? `${e.count}x${e.token}` : e.token)).join(", ");
 }
 
-// Full bio = the untouched base + the managed row on its own line below it.
+// Full bio = the untouched base + a "today bests: ..." line below it.
+const ROW_PREFIX = "today bests: ";
 function buildBio(baseBio, state) {
   const row = formatRow(state);
   const base = (baseBio || "").replace(/\s+$/, "");
   if (!row) return base;
-  return base ? `${base}\n${row}` : row;
+  const line = ROW_PREFIX + row;
+  return base ? `${base}\n${line}` : line;
 }
 
 module.exports = { runToken, qualifies, freshState, addRun, formatRow, buildBio, DEFAULTS };
@@ -103,8 +105,8 @@ if (require.main === module && process.argv.includes("--test")) {
   ({ state: s } = addRun(s, 45, 100, D));
   assert.strictEqual(formatRow(s), "17-88%, 29-100%, 2x45-100%");
 
-  // buildBio preserves the base bio and adds the row below.
-  assert.strictEqual(buildBio("gravity", s), "gravity\n17-88%, 29-100%, 2x45-100%");
+  // buildBio preserves the base bio and adds the "today bests:" line below.
+  assert.strictEqual(buildBio("gravity 86,29-100", s), "gravity 86,29-100\ntoday bests: 17-88%, 29-100%, 2x45-100%");
 
   // New day resets.
   ({ state: s } = addRun(s, 0, 90, "2026-07-11"));

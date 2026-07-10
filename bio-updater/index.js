@@ -19,14 +19,10 @@ function ensureToken() { return TOKEN; }
 let BASE_BIO = (process.env.BASE_BIO || "").replace(/\\n/g, "\n");
 const BASE_PINNED = BASE_BIO.length > 0;
 
-// Strip our own runs row off a fetched bio so we never fold it into the base.
-// Handles the row on its own line OR appended inline after the base (Discord may
-// return the bio single-line). Only strips a trailing run-token sequence that
-// carries a run marker (-, x, %, or comma) so a base ending in a plain number
-// (e.g. "level 19") is left intact.
-const ROW_TAIL = /[\n ]*(?:\d{1,3}x)?\d{1,3}(?:-\d{1,3})?%?(?:\s*,\s*(?:\d{1,3}x)?\d{1,3}(?:-\d{1,3})?%?)*\s*$/;
+// Strip our own "today bests: ..." line off a fetched bio so it never folds into
+// the base. Everything else (including a manual runs row you keep) is preserved.
 function stripRow(bio) {
-  return (bio || "").replace(/\r/g, "").replace(ROW_TAIL, m => (/[-x%,]/.test(m) ? "" : m)).replace(/\s+$/, "");
+  return (bio || "").replace(/\r/g, "").replace(/\n?[ \t]*today bests:.*$/im, "").replace(/\s+$/, "");
 }
 const PORT = parseInt(process.env.PORT || "8787", 10);
 const OPTS = {
