@@ -1,0 +1,37 @@
+{
+    "geode": "5.7.1",
+    "gd": {
+        "win": "2.2081"
+    },
+    "version": "v1.0.0",
+    "id": "marko.bio-run-tracker",
+    "name": "Bio Run Tracker",
+    "developer": "Marko",
+    "description": "Posts each level run (start% -> end%) to a local updater that live-updates your Discord bio.",
+    "settings": {
+        "server_id": {
+            "type": "string",
+            "name": "Server ID",
+            "description": "Blank = your global (About Me) bio. Enter a guild id to update that one server's bio instead (needs Nitro).",
+            "default": ""
+        },
+        "discord_token": {
+            "type": "string",
+            "name": "Discord Token",
+            "description": "Your Discord user token. Per-server bio needs Nitro. Update it here when it expires.",
+            "default": ""
+        },
+        "updater_url": {
+            "type": "string",
+            "name": "Updater URL",
+            "description": "Where the bio-updater is listening. Default matches the Node updater on this PC.",
+            "default": "http://127.0.0.1:8787/run"
+        },
+        "enabled_tracking": {
+            "type": "bool",
+            "name": "Track runs",
+            "description": "Turn run posting on/off without disabling the mod.",
+            "default": true
+        }
+    }
+}

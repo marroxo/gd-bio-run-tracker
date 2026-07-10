@@ -1,0 +1,13 @@
+{
+  "name": "gd-bio-updater",
+  "version": "1.0.0",
+  "description": "Live-updates a per-server Discord bio with today's Geometry Dash runs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node logic.js --test"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
