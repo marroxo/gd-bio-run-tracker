@@ -32,15 +32,26 @@ static void postRun(int start, int end, std::string const& level) {
 
 class $modify(BioPlayLayer, PlayLayer) {
     struct Fields {
-        int startPct = 0;      // % at the moment this attempt began (0, or a checkpoint)
+        int startPct = 0;      // % where this attempt began (0, a start pos, or a checkpoint)
         bool posted = false;   // one report per attempt
+        bool captured = false; // start% captured yet this attempt?
     };
 
-    // Called on every (re)start of an attempt — record the starting %.
+    // New attempt — re-capture start% on the first frame (below), so a start pos /
+    // checkpoint / first run all read their real starting %, not 0.
     void resetLevel() {
         PlayLayer::resetLevel();
-        m_fields->startPct = this->getCurrentPercentInt();
         m_fields->posted = false;
+        m_fields->captured = false;
+    }
+
+    // First frame after a (re)start: read the actual starting % once it's applied.
+    void postUpdate(float dt) {
+        PlayLayer::postUpdate(dt);
+        if (!m_fields->captured) {
+            m_fields->startPct = this->getCurrentPercentInt();
+            m_fields->captured = true;
+        }
     }
 
     // Death — report start -> where we died.
