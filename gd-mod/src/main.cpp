@@ -2,8 +2,18 @@
 #include <Geode/modify/PlayLayer.hpp>
 #include <Geode/utils/web.hpp>
 #include <thread>
+#include <algorithm>
 
 using namespace geode::prelude;
+
+// Should this level be tracked? Setting "tracked_level_ids" is a comma-separated
+// list of level IDs; blank means track every level.
+static bool levelTracked(int levelID) {
+    auto s = Mod::get()->getSettingValue<std::string>("tracked_level_ids");
+    s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
+    if (s.empty()) return true;
+    return ("," + s + ",").find("," + std::to_string(levelID) + ",") != std::string::npos;
+}
 
 // Fire-and-forget POST of one run to the local bio-updater. The updater does all
 // the filtering (100% or span > threshold) and bio formatting — the mod just
@@ -58,6 +68,7 @@ class $modify(BioPlayLayer, PlayLayer) {
     void destroyPlayer(PlayerObject* player, GameObject* obj) {
         PlayLayer::destroyPlayer(player, obj);
         if (m_fields->posted) return;
+        if (!levelTracked(m_level ? m_level->m_levelID : 0)) return;
         m_fields->posted = true;
         int end = this->getCurrentPercentInt();
         std::string name = m_level ? std::string(m_level->m_levelName) : std::string();
@@ -68,6 +79,7 @@ class $modify(BioPlayLayer, PlayLayer) {
     void levelComplete() {
         PlayLayer::levelComplete();
         if (m_fields->posted) return;
+        if (!levelTracked(m_level ? m_level->m_levelID : 0)) return;
         m_fields->posted = true;
         std::string name = m_level ? std::string(m_level->m_levelName) : std::string();
         postRun(m_fields->startPct, 100, name);

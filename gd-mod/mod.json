@@ -9,6 +9,12 @@
     "developer": "Marko",
     "description": "Posts each level run (start% -> end%) to a local updater that live-updates your Discord bio.",
     "settings": {
+        "tracked_level_ids": {
+            "type": "string",
+            "name": "Tracked Level IDs",
+            "description": "Comma-separated level IDs to track (e.g. 128 or 128,4284). Blank = track every level. Find a level's ID on its info page.",
+            "default": ""
+        },
         "server_id": {
             "type": "string",
             "name": "Server ID",
